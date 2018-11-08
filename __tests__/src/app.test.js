@@ -60,7 +60,7 @@ describe('api server', () => {
   it('should respond properly on a get request to a valid model', () => {
 
     return mockRequest
-    .get('/api/v1/notes')
+    .get('/api/v1/teams')
     .then(results => {
       expect(results.status).toBe(200);
     })
@@ -72,14 +72,14 @@ describe('api server', () => {
 
   it('should be able to post to /api/v1/notes', ()  => {
 
-    let obj = {title:'test',text:'foo'};
+    let obj = {name:'test'};
 
     return mockRequest
-    .post('/api/v1/notes')
+    .post('/api/v1/teams')
     .send(obj)
     .then(results => {
       expect(results.status).toBe(200);
-      expect(results.body.title).toEqual(obj.title);
+      expect(results.body.name).toEqual(obj.name);
     })
     .catch( err => console.error('err', err) );
 
@@ -88,15 +88,15 @@ describe('api server', () => {
 
   it('following a post, should find a single record', () => {
 
-    let obj = {title:'test',text:'foo'};
+    let obj = {name:'test'};
 
     return mockRequest
-    .post('/api/v1/notes')
+    .post('/api/v1/teams')
     .send(obj)
     .then(results => {
-      return mockRequest.get(`/api/v1/notes/${results.body._id}`)
+      return mockRequest.get(`/api/v1/teams/${results.body._id}`)
       .then(list => {
-        expect(list.body[0].title).toEqual(obj.title);
+        expect(list.body[0].name).toEqual(obj.name);
         expect(list.status).toBe(200);
       })
     })
@@ -107,7 +107,7 @@ describe('api server', () => {
   it('following multiple posts, should return the correct count', () => {
 
     return mockRequest
-    .get('/api/v1/notes')
+    .get('/api/v1/teams')
     .then(results => {
       expect(results.body.count).toEqual(2);
       expect(results.status).toBe(200);

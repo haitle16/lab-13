@@ -1,6 +1,9 @@
 'use strict';
 
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt'; //1
+import jwt from 'jsonwebtoken'; //2
+
 
 const userSchema = new mongoose.Schema({
   username: {type: String, required: true, unique: true},
@@ -25,6 +28,9 @@ userSchema.pre('save', function(next) {
 // If we got a user/password, compare them to the hashed password
 // return the user instance or an error
 userSchema.statics.authenticateBasic = function(auth) {
+  ////////////////////////////////////////////////////////////
+  // let query = {username:auth.username};
+  ////////////////////////////////////////////////////////////
   let query = {username:auth.username};
   return this.findOne(query)
     .then(user => user && user.comparePassword(auth.password))
@@ -32,7 +38,10 @@ userSchema.statics.authenticateBasic = function(auth) {
 };
 
 userSchema.statics.authenticateToken = function(token) {
-  let parsedToken = jwt.verify(token);
+  ////////////////////////////////////////////////////////////
+  let parsedToken = jwt.verify(token, process.env.SECRET || 'changeme');
+  ////////////////////////////////////////////////////////////
+  // let parsedToken = jwt.verify(token);
   let query = {_id:parsedToken.id};
   return this.findOne(query)
     .then(user => {
@@ -43,15 +52,19 @@ userSchema.statics.authenticateToken = function(token) {
 
 // Compare a plain text password against the hashed one we have saved
 userSchema.methods.comparePassword = function(password) {
-  return bcrypt.compare(password, this.password);
+  return bcrypt.compare(password, this.password)
+  ////////////////////////////////////////////////////////////
+    .then (valid => valid ? this : null);
+  ////////////////////////////////////////////////////////////
 };
 
 // Generate a JWT from the user id and a secret
 userSchema.methods.generateToken = function() {
   let tokenData = {
+    // Whatever shoved in here can get back at jwt.io with encoding.
     id:this._id,
   };
-  return jwt.sign(tokenData, process.env.SECRET || 'changeit' );
+  return jwt.sign(tokenData, process.env.SECRET || 'changeme' );
 };
 
 export default mongoose.model('users', userSchema);

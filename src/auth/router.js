@@ -16,12 +16,16 @@ authRouter.post('/signup', (req, res, next) => {
       req.user = user;
       res.cookie('auth', req.token);
       res.send(req.token);
-    }).catch(next);
+    }).catch(e=>{
+      console.log(e);
+      next('Invalid Submission Criterial');
+    });
 });
 
 authRouter.post('/signin', auth, (req, res, next) => {
   res.cookie('auth', req.token);
-  res.send(req.token);
+  res.send(req.token); // deleted this route when finished.
+  //res.redirect('/');
 });
 
 export default authRouter;
