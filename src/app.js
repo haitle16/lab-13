@@ -8,6 +8,8 @@ import https from 'https';
 import fs from 'fs';
 import path from 'path';
 
+import auth from './auth/middleware.js'
+
 // Esoteric Resources
 import errorHandler from './middleware/error.js';
 import notFound from './middleware/404.js';
@@ -25,6 +27,9 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
 // Routes
+app.get('/',auth,(req,res) =>{
+  res.send('hi');
+});
 app.use(authRouter);
 app.use(apiRouter);
 
