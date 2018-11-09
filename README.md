@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/haitle16/lab-13.svg?branch=master)](https://travis-ci.com/haitle16/lab-13)
 # Lab 13
 
 ##  Documentation
