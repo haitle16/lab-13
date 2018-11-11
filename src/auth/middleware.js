@@ -62,6 +62,7 @@ export default (req, res, next) => {
       // Send the user and token back to the request
       ////////////////////////////////////////////////////////////
       req.user = user;
+      req.token = user.generateToken();
       ////////////////////////////////////////////////////////////
       next();
     }
